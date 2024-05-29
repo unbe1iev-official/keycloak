@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!--suppress ALL -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>unbe1iev-keycloak-extentions</artifactId>
+    <groupId>com.unbe1iev</groupId>
+    <name>Keycloak extension pack for unbe1iev system (Custom Event Listener)</name>
+    <version>1.0.0</version>
+    <description/>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <keycloak.version>24.0.4</keycloak.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-model-jpa</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-dependencies-server-min</artifactId>
+            <version>${keycloak.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>org.jboss.resteasy:resteasy-client,org.jboss.resteasy:resteasy-client-api,org.wildfly:wildfly-client-all,org.openapitools:jackson-databind-nullable</includes>
+                    </artifactSet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

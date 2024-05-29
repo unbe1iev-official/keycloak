@@ -1,0 +1,6 @@
+.idea/
+target/
+custom-event-listener/target/
+custom-event-listener/.idea/
+/mariadb_data/
+/keycloak_data/

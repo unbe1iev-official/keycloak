@@ -1,0 +1,51 @@
+services:
+  keycloak_db:
+    image: mariadb:11.2.4
+    container_name: keycloak_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+    networks:
+      - unbe1iev_local
+
+  keycloak:
+    image: keycloak:24.0.4
+    container_name: keycloak
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+      KC_DB_URL: jdbc:mariadb://mariadb:3306/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_DB: mariadb
+      JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+      QUARKUS_HIBERNATE_ORM_LOG_SQL: "true"
+    command:
+      - --hostname-admin=localhost
+      - --spi-theme-static-max-age=-1
+      - --spi-theme-cache-themes=false
+      - --spi-theme-cache-templates=false
+      - --spi-events-listener-custom-event-listener-callback-endpoint=http://host.docker.internal:8805/api/keycloak/events
+      - --log=console
+      - --log-level=INFO,org.keycloak:info,org.keycloak.transaction:info,org.keycloak.services.scheduled:info,org.hibernate.SQL:info,org.hibernate.engine.spi:info,org.hibernate.type:info
+    depends_on:
+      - keycloak_db
+    networks:
+      - unbe1iev_local
+    volumes:
+      - ./keycloak_data:/opt/keycloak/data
+
+networks:
+  unbe1iev_local:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+  keycloak_data:
