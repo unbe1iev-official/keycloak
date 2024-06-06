@@ -1,9 +1,9 @@
-name: Build, Sign, and Deploy Keycloak
+name: Build, Sign, Deploy - Keycloak
 
 on:
   push:
     branches:
-      - dev
+      - off # dev - turn on 'dev'
 
 jobs:
   build:
@@ -24,11 +24,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --no-cache -t ${{ secrets.HARBOR_REGISTRY }}/${{ github.event.repository.name }}:24.0.4 .
+          docker build --no-cache -t ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.PROJECT_NAME }}-${{ github.ref_name }}/${{ github.event.repository.name }}:24.0.4 .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.HARBOR_REGISTRY }}/${{ github.event.repository.name }}:24.0.4
+          docker push ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.PROJECT_NAME }}-${{ github.ref_name }}/${{ github.event.repository.name }}:24.0.4
 
   sign:
     needs: build
@@ -48,7 +48,7 @@ jobs:
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          cosign sign --key cosign.key ${{ secrets.HARBOR_REGISTRY }}/${{ github.event.repository.name }}:24.0.4
+          cosign sign --key cosign.key ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.PROJECT_NAME }}-${{ github.ref_name }}/${{ github.event.repository.name }}:24.0.4
 
 
   deploy:
@@ -70,4 +70,4 @@ jobs:
 
       - name: Rollout Restart StatefulSet
         run: |
-          ssh -o StrictHostKeyChecking=no -i deployer_key ${{ secrets.DEPLOYER_USERNAME }}@${{ secrets.SERVER_HOST }} 'kubectl rollout restart statefulset keycloak -n unbe1iev-keycloak'
+          ssh -o StrictHostKeyChecking=no -i deployer_key ${{ secrets.DEPLOYER_USERNAME }}@${{ secrets.SERVER_HOST }} 'kubectl rollout restart statefulset ${{ github.event.repository.name }} -n keycloak'

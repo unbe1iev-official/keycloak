@@ -50,11 +50,10 @@ public class CustomEventListenerProvider implements EventListenerProvider {
         removeOtherSessions(event);
 
         try {
+            HttpResponse response;
             switch (event.getType()) {
-                case LOGIN:
-                case LOGOUT:
-                case REFRESH_TOKEN:
-                    HttpResponse response = sendEvent(event);
+                case LOGIN, LOGOUT, REFRESH_TOKEN, REGISTER:
+                    response = sendEvent(event);
                     logger.info("Sent '" + event.getType() + "' event to callback backend service with response: " + response);
                     break;
                 default:
