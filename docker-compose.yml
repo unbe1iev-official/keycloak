@@ -27,12 +27,13 @@ services:
       KC_DB: mariadb
       JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
       QUARKUS_HIBERNATE_ORM_LOG_SQL: "true"
+      SPI_EVENTS_LISTENER_CUSTOM_EVENT_LISTENER_CALLBACK_ENDPOINT: http://host.docker.internal:8000/api/keycloak/events
+      SHARED_SECRET_VALUE: secret
     command:
       - --hostname-admin=localhost
       - --spi-theme-static-max-age=-1
       - --spi-theme-cache-themes=false
       - --spi-theme-cache-templates=false
-      - --spi-events-listener-custom-event-listener-callback-endpoint=http://host.docker.internal:8000/api/keycloak/events
       - --log=console
       - --log-level=INFO,org.keycloak:info,org.keycloak.transaction:info,org.keycloak.services.scheduled:info,org.hibernate.SQL:info,org.hibernate.engine.spi:info,org.hibernate.type:info
     depends_on:

@@ -1,10 +1,6 @@
-# FROM common:1.0.0 as common
-
 FROM maven:3.9.1-eclipse-temurin-17-alpine as compiler
 
 ENV MAVEN_CLI_OPTS '-B -DskipTests -Dmaven.repo.local=/opt/.m2/repository'
-
-# COPY --from=common /opt/.m2/repository /opt/.m2/repository
 
 WORKDIR /tmp/maven
 

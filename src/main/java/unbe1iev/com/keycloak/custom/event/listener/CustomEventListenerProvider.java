@@ -21,16 +21,17 @@ import static org.keycloak.events.EventType.LOGIN;
 public class CustomEventListenerProvider implements EventListenerProvider {
 
     private static final Logger logger = Logger.getLogger(CustomEventListenerProvider.class);
-    private static final String SHARED_SECRET_VALUE = "yz7eG04kNKu9xN6Qta3j";
 
     private final String baseUrl;
+    private final String sharedSecretValue;
     private final KeycloakSession session;
     private final CloseableHttpClient httpClient = HttpClients.createDefault();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    CustomEventListenerProvider(KeycloakSession session, String baseUrl) {
+    CustomEventListenerProvider(KeycloakSession session, String baseUrl, String sharedSecretValue) {
         this.session = session;
         this.baseUrl = baseUrl;
+        this.sharedSecretValue = sharedSecretValue;
     }
 
     private HttpResponse sendEvent(Object event) throws IOException {
@@ -39,7 +40,7 @@ public class CustomEventListenerProvider implements EventListenerProvider {
         String requestBody = mapper.writeValueAsString(event);
         StringEntity entity = new StringEntity(requestBody);
         entity.setContentType("application/json");
-        request.setHeader("X-Shared-Secret", SHARED_SECRET_VALUE);
+        request.setHeader("X-Shared-Secret", sharedSecretValue);
         request.setEntity(entity);
 
         return httpClient.execute(request);

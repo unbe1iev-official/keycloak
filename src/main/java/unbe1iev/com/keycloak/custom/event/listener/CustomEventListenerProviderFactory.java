@@ -14,15 +14,17 @@ public class CustomEventListenerProviderFactory implements EventListenerProvider
     private static final String PROVIDER_ID = "custom-event-listener";
 
     private String callbackUrl;
+    private String sharedSecretValue;
 
     @Override
     public EventListenerProvider create(KeycloakSession keycloakSession) {
-        return new CustomEventListenerProvider(keycloakSession, callbackUrl);
+        return new CustomEventListenerProvider(keycloakSession, callbackUrl, sharedSecretValue);
     }
 
     @Override
     public void init(Config.Scope scope) {
         this.callbackUrl = scope.get(CALLBACK_ENDPOINT_CONFIG_PARAMETER);
+        this.sharedSecretValue = System.getenv("SHARED_SECRET_VALUE");
         logger.info("CustomEventListenerProviderFactory init callback-endpoint to " + this.callbackUrl);
     }
 
