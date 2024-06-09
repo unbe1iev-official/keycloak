@@ -9,12 +9,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.jboss.logging.Logger;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
+import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static org.keycloak.events.EventType.LOGIN;
 
@@ -52,12 +54,9 @@ public class CustomEventListenerProvider implements EventListenerProvider {
 
         try {
             HttpResponse response;
-            switch (event.getType()) {
-                case LOGIN, LOGOUT, REFRESH_TOKEN, REGISTER:
-                    response = sendEvent(event);
-                    logger.info("Sent '" + event.getType() + "' event to callback backend service with response: " + response);
-                    break;
-                default:
+            if (Objects.requireNonNull(event.getType()) == EventType.REGISTER) {
+                response = sendEvent(event);
+                logger.info("Sent '" + event.getType() + "' event to callback backend service with response: " + response);
             }
         } catch (IOException e) {
             logger.error("An exception occurred during sending [Event] to backend service: ", e);
