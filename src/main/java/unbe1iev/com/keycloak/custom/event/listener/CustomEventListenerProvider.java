@@ -24,21 +24,17 @@ public class CustomEventListenerProvider implements EventListenerProvider {
 
     private static final Logger logger = Logger.getLogger(CustomEventListenerProvider.class);
 
-    private final String baseUrl;
-    private final String sharedSecretValue;
     private final KeycloakSession session;
     private final CloseableHttpClient httpClient = HttpClients.createDefault();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    CustomEventListenerProvider(KeycloakSession session, String baseUrl, String sharedSecretValue) {
+    CustomEventListenerProvider(KeycloakSession session) {
         this.session = session;
-        this.baseUrl = baseUrl;
-        this.sharedSecretValue = sharedSecretValue;
     }
 
     private HttpResponse sendEvent(Object event) throws IOException {
-        HttpPost request = new HttpPost(baseUrl);
-
+        HttpPost request = new HttpPost("http://unbe1iev-callback.unbe1iev-dev.svc.cluster.local:8000/api-callback/keycloak/events");
+        String sharedSecretValue = "Unk5MjdMcmVJVlRmaWpLQ3R0RnA=";
         String requestBody = mapper.writeValueAsString(event);
         StringEntity entity = new StringEntity(requestBody);
         entity.setContentType("application/json");
